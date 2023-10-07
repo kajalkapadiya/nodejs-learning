@@ -1,12 +1,21 @@
 const http = require("http");
 
 const server = http.createServer((req, res) => {
-  res.setHeader("Content-Type", "text/html");
-  res.write("<html>");
-  res.write("<head><title>My First Page</title><head>");
-  res.write("<body><h1>hello!</h1></body>");
-  res.write("</html>");
-  res.end();
+  const url = req.url;
+  let responseText = "";
+
+  if (url === "/home") {
+    responseText = "Welcome home";
+  } else if (url === "/about") {
+    responseText = "Welcome to About Us page";
+  } else if (url === "/node") {
+    responseText = "Welcome to my Node.js project";
+  } else {
+    responseText = "Hello!";
+  }
+
+  res.setHeader("Content-Type", "text/plain");
+  res.end(responseText);
 });
 
 const port = 3000;
