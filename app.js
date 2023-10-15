@@ -1,28 +1,21 @@
 const express = require("express");
 const bodyParser = require('body-parser')
 const app = express();
+const adminRoutes = require('./routes/admin')
+const shopRoutes = require('./routes/shop')
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use("/add-users", (req, res, next) => {
-  // console.log("In the middleware-3");
-  res.send('<form action="/users" method="POST"><input type="text" name="title"/><button type="submit">Send</button></form>'
-  );
-});
+app.use(adminRoutes);
+app.use(shopRoutes);
 
-app.post('/users', (req, res, next) => {
-  console.log(req.body)
-  res.redirect('/')
+//add 404 error page: 
+app.use((req, res, next) => {
+  res.status(404).send('<h1>Page not found!</h1>')
 })
-
-app.use("/", (req, res, next) => {
-  // console.log("In the middleware-1");
-  res.send("<h1>hello from express JS</h1>");
-});
 
 const port = 3000;
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
-
 });
