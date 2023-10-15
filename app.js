@@ -1,47 +1,28 @@
-const http = require("http");
-const fs = require("fs");
+const express = require("express");
+const bodyParser = require('body-parser')
+const app = express();
 
-const server = http.createServer((req, res) => {
-  const url = req.url;
-  const method = req.method;
+app.use(bodyParser.urlencoded({extended: false}));
 
-  if (url === "/") {
-    res.write("<html>");
-    res.write("<head><title>Node Js Response</title></head>");
-    res.write(
-      '<body><form action="/message" method="POST"><input type="text" name="myMessage"><button type=submit>Submit</button></form></body>'
-    );
-    res.write("</html>");
-    return res.end();
-  }
-  if (url === "/message" && method === "POST") {
-    const body = [];
-    req.on("data", (chunk) => {
-      body.push(chunk);
-      console.log(chunk);
-    });
-    return req.on("end", () => {
-      const parsedBody = Buffer.concat(body).toString();
-      console.log(parsedBody);
-      const message = parsedBody.split("=")[1];
-      fs.writeFile("myMsg.txt", message, (err) => {
-        //success
-        res.statusCode = 302;
-        res.setHeader("Location", "/");
-        return res.end();
-      });
-    });
-  }
-  res.setHeader("Content-Type", "text/html");
-  res.write("<html>");
-  res.write("<head><title>Node Js Response</title></head>");
-  res.write("<body><h1>Hello from Node Js!</h1></body>");
-  res.write("</html>");
-  res.end();
+app.use("/add-users", (req, res, next) => {
+  // console.log("In the middleware-3");
+  res.send('<form action="/users" method="POST"><input type="text" name="title"/><button type="submit">Send</button></form>'
+  );
+});
+
+app.post('/users', (req, res, next) => {
+  console.log(req.body)
+  res.redirect('/')
+})
+
+app.use("/", (req, res, next) => {
+  // console.log("In the middleware-1");
+  res.send("<h1>hello from express JS</h1>");
 });
 
 const port = 3000;
 
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
+
 });
